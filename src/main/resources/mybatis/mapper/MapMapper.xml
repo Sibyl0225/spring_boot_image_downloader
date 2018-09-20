@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neo.mapper.MapMapper" >
+    
+    <sql id="Base_Column_List" >
+        C_SWJG_JC, C_SWJG_BM, C_SWJG_MC, uuid
+    </sql>
+
+    <select id="getAll" resultType="java.util.Map"  >
+       SELECT 
+       <include refid="Base_Column_List" />
+	   FROM t_swjg
+    </select>
+
+    <select id="getOne" parameterType="Long" resultType="java.util.Map" >
+        SELECT 
+       <include refid="Base_Column_List" />
+	   FROM t_swjg
+	   WHERE uuid = #{uuid}
+    </select>
+    
+    <select id="getOneByBm" parameterType="String" resultType="java.util.Map" >
+        SELECT 
+       <include refid="Base_Column_List" />
+	   FROM t_swjg
+	   WHERE C_SWJG_BM = #{value}
+    </select>
+
+    <insert id="insert" parameterType="HashMap" >
+       INSERT INTO 
+       		t_swjg
+       		(C_SWJG_JC, C_SWJG_BM, C_SWJG_MC) 
+       	VALUES
+       		(#{C_SWJG_JC}, #{C_SWJG_BM}, #{C_SWJG_MC})
+    </insert>
+    
+    <update id="update" parameterType="HashMap" >
+       UPDATE 
+       		t_swjg 
+       SET 
+       	<if test="C_SWJG_JC != null">C_SWJG_JC = #{C_SWJG_JC},</if>
+       	C_SWJG_BM = #{C_SWJG_BM},
+       	C_SWJG_MC = #{C_SWJG_MC}
+       WHERE 
+       		uuid = #{uuid}
+    </update>
+    
+    <delete id="delete" parameterType="Long" >
+       DELETE FROM
+       		 t_swjg 
+       WHERE 
+       		 uuid =#{uuid}
+    </delete>
+
+</mapper>
