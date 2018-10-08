@@ -2,7 +2,9 @@ package com.neo.yande.downLoader;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -100,6 +102,8 @@ public class YandeParse implements YandeParseInterface {
 				String imgSize = directlink.select("span.directlink-res").html();
 				yande.setImageResolution(imgSize);
 			}
+			
+			yande.setCreateDate(new SimpleDateFormat().format(new Date()));
 			yandes.add(yande);
 			logger.info(yande);
 		}

@@ -58,7 +58,7 @@ public class test {
 			}
 			for (Yande yande : yandes) {
 				yande.setOverFlag(true);
-				yande.setCreateDate(new SimpleDateFormat().format(new Date()));
+				
 				queues.put(yande);
 				total++;
 				System.out.println("put "+total+" into queue!");
