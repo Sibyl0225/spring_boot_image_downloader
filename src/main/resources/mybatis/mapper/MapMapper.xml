@@ -16,7 +16,7 @@
         SELECT 
        <include refid="Base_Column_List" />
 	   FROM t_swjg
-	   WHERE uuid = #{uuid}
+	   WHERE uuid = #{id}
     </select>
     
     <select id="getOneByBm" parameterType="String" resultType="java.util.Map" >
