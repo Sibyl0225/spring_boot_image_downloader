@@ -2,3 +2,5 @@
 /.classpath
 /.gitignore
 /.project
+/.settings/
+/logs/
