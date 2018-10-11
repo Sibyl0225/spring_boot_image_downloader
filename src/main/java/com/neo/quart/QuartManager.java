@@ -2,14 +2,13 @@ package com.neo.quart;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.Job;
@@ -24,16 +23,14 @@ import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
-import org.quartz.impl.JobDetailImpl;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
 
 import com.neo.util.DateUtil;
-import com.neo.yande.test;
 
 public class QuartManager {
 	
-	static Logger logger = Logger.getLogger(QuartManager.class);
+	private static Logger logger = LogManager.getLogger(QuartManager.class.getName());
 	
 	public static String JobDetailType = "0";
 	public static String TriggerType = "1";

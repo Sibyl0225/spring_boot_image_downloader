@@ -8,8 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,7 +23,7 @@ public class YandeParse implements YandeParseInterface {
 
 	private int retrayTimes = 0;
 	
-	static Logger logger = Logger.getLogger(YandeParse.class);
+	private static Logger logger = LogManager.getLogger(YandeParse.class.getName());
 	
 	public YandeParse() {
 		

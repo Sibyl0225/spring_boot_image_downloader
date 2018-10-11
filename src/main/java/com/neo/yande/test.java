@@ -1,12 +1,10 @@
 package com.neo.yande;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.neo.yande.downLoader.SimpleDownLoader;
 import com.neo.yande.downLoader.YandeParse;
@@ -15,7 +13,7 @@ import com.neo.yande.entity.Yande;
 
 public class test {
 	
-	static Logger logger = Logger.getLogger(test.class);
+	private static Logger logger = LogManager.getLogger(test.class.getName());
 
 	public static void main(String[] args) throws InterruptedException {
 		
