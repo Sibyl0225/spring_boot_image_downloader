@@ -120,7 +120,7 @@ public class MultipartDownloader extends Downloader{
 	            //进度记录文件
 				File cashTxt = new File(savePath,imageId +"_"+threadId+ ".tmp");
 	            
-	            RandomAccessFile downThreadStream = null;
+	            RandomAccessFile downThreadStream = new RandomAccessFile(image,"rwd");
 	            if(cashTxt.exists()){//如果文件存在
 	                downThreadStream = new RandomAccessFile(image,"rwd");	                
 					String lastPostion_str = FileUtils.readFileToString(cashTxt, "UTF-8");
@@ -167,7 +167,7 @@ public class MultipartDownloader extends Downloader{
 	            			if (latch.getCount() == 0) {
 	            				System.out.println("所有线程下载完成");
 	            				for (int i = 0; i < 20; i++) {
-	            					File file = new File(savePath,imageId +"_"+i+ ".txt");
+	            					File file = new File(savePath,imageId +"_"+i+ ".tmp");
 	            					if(file.exists()){
 	            						cleanTemp(file);
 	            					} 	            					

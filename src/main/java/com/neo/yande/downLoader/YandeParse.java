@@ -2,31 +2,30 @@ package com.neo.yande.downLoader;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.slf4j.Log4jLogger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.neo.yande.test;
 import com.neo.yande.entity.Const;
 import com.neo.yande.entity.Yande;
-
 
 public class YandeParse implements YandeParseInterface {
 
 	private int retrayTimes = 0;
 	
-	private static Logger logger = LogManager.getLogger(YandeParse.class.getName());
+	private static Logger logger = LogManager.getLogger(test.class.getName());
 	
 	public YandeParse() {
-		
+//		PropertyConfigurator.configure("bin/log4j.propertier");
 	}
 
 	@Override
@@ -63,7 +62,7 @@ public class YandeParse implements YandeParseInterface {
 			logger.info("Time is:" + (System.currentTimeMillis() - start) / 1000 + "s");
 		}
 
-		
+
 		
 		if(selectlis == null || selectlis.size()<1) {
 			logger.error("网页标签格局更变，请重写Jsoup parse业务！");
@@ -72,7 +71,9 @@ public class YandeParse implements YandeParseInterface {
 
 		for (Element element : selectlis) {
 			Element parent = element.parent().parent().parent();
+
 			Yande yande = new Yande();
+
 			// id
 			if (parent.hasAttr("id")) {
 				String imgId = parent.attr("id");
@@ -102,10 +103,8 @@ public class YandeParse implements YandeParseInterface {
 				String imgSize = directlink.select("span.directlink-res").html();
 				yande.setImageResolution(imgSize);
 			}
-			
-			yande.setCreateDate(new SimpleDateFormat().format(new Date()));
+
 			yandes.add(yande);
-			logger.info(yande);
 		}
 		return yandes;
 	}

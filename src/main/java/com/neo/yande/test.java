@@ -1,12 +1,14 @@
 package com.neo.yande;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.neo.yande.downLoader.SimpleDownLoader;
+import com.neo.yande.downLoader.MultipartDownloader;
 import com.neo.yande.downLoader.YandeParse;
 import com.neo.yande.entity.Downloader;
 import com.neo.yande.entity.Yande;
@@ -17,6 +19,7 @@ public class test {
 
 	public static void main(String[] args) throws InterruptedException {
 		
+//		PropertyConfigurator.configure("bin/log4j.propertier");
 		
 		final String  savePath = "C:/yande";
 		
@@ -37,16 +40,16 @@ public class test {
 //		logger.info("rootPath:"+rootPath);
 //		System.exit(0);
 
-		int totalPage = 1;
+		int totalPage = 3;
 		int total = 0;
 		
-		for (int j = 0; j < 1; j++) {			
-			Downloader downLoader = new SimpleDownLoader();
+		for (int j = 0; j < 1; j++) {
+			Downloader downLoader = new MultipartDownloader();
 			downLoader.commenDownloader(j, savePath, queues);
 			downLoader.start();
 		}
 		YandeParse yandeParse = new YandeParse();
-		for (int page = 1; page <= totalPage; page++) {
+		for (int page = 1; page < totalPage; page++) {
 			List<Yande> yandes = null;
 			try {				
 				yandes = yandeParse.getListFromYande(page);
@@ -55,11 +58,11 @@ public class test {
 				continue;
 			}
 			for (Yande yande : yandes) {
-				yande.setOverFlag(true);
-				
+				yande.setOverFlag(false);
+				yande.setCreateDate(new SimpleDateFormat().format(new Date()));
 				queues.put(yande);
 				total++;
-				System.out.println("put "+total+" into queue!");
+				System.out.println("put "+ "   " + total + yande.getImageId() +" into queue!");
 			}
 		}
 
