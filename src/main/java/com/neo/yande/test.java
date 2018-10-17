@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.neo.yande.downLoader.MultipartDownloader;
+import com.neo.yande.downLoader.SimpleDownLoader;
 import com.neo.yande.downLoader.YandeParse;
 import com.neo.yande.entity.Downloader;
 import com.neo.yande.entity.Yande;
@@ -40,16 +41,17 @@ public class test {
 //		logger.info("rootPath:"+rootPath);
 //		System.exit(0);
 
-		int totalPage = 3;
+		int totalPage = 20;
 		int total = 0;
 		
-		for (int j = 0; j < 1; j++) {
-			Downloader downLoader = new MultipartDownloader();
+		for (int j = 0; j < 10; j++) {
+//			Downloader downLoader = new MultipartDownloader();
+			Downloader downLoader = new SimpleDownLoader();
 			downLoader.commenDownloader(j, savePath, queues);
 			downLoader.start();
 		}
 		YandeParse yandeParse = new YandeParse();
-		for (int page = 1; page < totalPage; page++) {
+		for (int page = 3; page < totalPage; page++) {
 			List<Yande> yandes = null;
 			try {				
 				yandes = yandeParse.getListFromYande(page);
@@ -62,7 +64,7 @@ public class test {
 				yande.setCreateDate(new SimpleDateFormat().format(new Date()));
 				queues.put(yande);
 				total++;
-				System.out.println("put "+ "   " + total + yande.getImageId() +" into queue!");
+				logger.info("put "+ "   " + total + yande.getImageId() +" into queue!");
 			}
 		}
 

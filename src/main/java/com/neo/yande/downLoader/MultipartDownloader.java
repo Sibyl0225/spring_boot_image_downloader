@@ -10,12 +10,16 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.neo.yande.entity.Downloader;
 import com.neo.yande.entity.FileLengthTools;
 import com.neo.yande.entity.Yande;
 
 public class MultipartDownloader extends Downloader{
+	
+	private static Logger logger = LogManager.getLogger(MultipartDownloader.class.getName());
 
 	@Override
 	public void endlessDownloader() {
@@ -23,23 +27,25 @@ public class MultipartDownloader extends Downloader{
 		String savePath = super.getSavePath();
 		int threadId = super.getThreadId();
 		if (queue == null)
-			System.out.println("queue is null！");
+			logger.info("queue is null！");
 		Yande yande = null;
 		try {
 			while (true) {
 				yande = queue.take();
+				logger.info(queue.size()+" remain...");
 				if (yande != null && yande.isOverFlag() == false) {
-					System.out
-							.println("threadId: " + threadId + " 获取数据yande, 创建时间为：" + yande.getCreateDate() + "，开始下载！");
-					System.out.println("threadId: " + threadId + " 即将休眠1500ms...");
+					logger.info("threadId: " + threadId + " 获取数据yande, 创建时间为：" + yande.getCreateDate() + "，开始下载！");
+					logger.info("threadId: " + threadId + " 即将休眠1500ms...");
 					Thread.sleep(1500);
 					try {
-						int fileLength = FileLengthTools.getRemoteFileLenght(yande.getLargeSizeImage());
+						int fileLength = FileLengthTools.getRemoteFileLenght(yande.getPreviewImage());
 						int threadCount = 5;
+						if(fileLength < 1024*500) threadCount = 1;	
+
 						CountDownLatch latch = new CountDownLatch(threadCount);
 						DownImage(savePath, yande, fileLength, threadCount, latch);			
 						latch.await();
-						System.out.println("所有线程任务结束！下载完成！");			
+						logger.info("所有线程任务结束！下载完成！");			
 						success(yande);
 					} catch (Exception e) {
 						fail(yande);
@@ -47,7 +53,7 @@ public class MultipartDownloader extends Downloader{
 					}
 				} else {
 					queue.put(yande);
-					System.out.println("threadId: " + threadId + " 运行结束！即将退出");
+					logger.info("threadId: " + threadId + " 运行结束！即将退出");
 					break;
 				}
 			}
@@ -62,6 +68,8 @@ public class MultipartDownloader extends Downloader{
 		HttpURLConnection connection = null;
 
 		try {
+				if(fileLength < 1024*500) threadCount = 1;	
+				
 				for (int i = 0; i < threadCount; i++) {
 					int startPostion = i * blockSize;
 					int endPostion = (i + 1) * blockSize - 1;
@@ -80,12 +88,12 @@ public class MultipartDownloader extends Downloader{
 
 	@Override
 	public void success(Yande yande) {
-		System.out.println("下载成功！");
+		logger.info("下载成功！");
 	}
 
 	@Override
 	public void fail(Yande yande) {
-		System.out.println("下载失败！");
+		logger.info("下载失败！");
 	}
 	
 	public static class ThreadImageDownload extends Thread {
@@ -108,12 +116,12 @@ public class MultipartDownloader extends Downloader{
 		}
 
 		public void run() {
-			System.out.println("线程"+ threadId + "开始下载");
+			logger.info("线程"+ threadId + "开始下载");
 	        String imageId = yande.getImageId() ;
 	        
 	        try {
 	            //分段请求网络连接,分段将文件保存到本地.
-	            URL url = new URL(yande.getLargeSizeImage());           
+	            URL url = new URL(yande.getPreviewImage());           
                 String imageName = yande.getImageName();
 	            //加载下载位置的文件
 	            File image = new File(savePath,imageName);
@@ -159,13 +167,13 @@ public class MultipartDownloader extends Downloader{
 	            		downThreadStream.close();
 	            		inputStream.close(); 
             			accessfile.close();
-	            		System.out.println("线程"+ threadId + "下载完毕");
+	            		logger.info("线程"+ threadId + "下载完毕");
 	            		latch.countDown();
 	            		
 	            		// 当所有线程下载结束，删除存放下载位置的文件。
 	            		synchronized (ThreadImageDownload.class) {
 	            			if (latch.getCount() == 0) {
-	            				System.out.println("所有线程下载完成");
+	            				logger.info("所有线程下载完成");
 	            				for (int i = 0; i < 20; i++) {
 	            					File file = new File(savePath,imageId +"_"+i+ ".tmp");
 	            					if(file.exists()){
@@ -176,7 +184,7 @@ public class MultipartDownloader extends Downloader{
 	            		}
 	            		
 	            	}else{
-	            		System.out.println("响应码是" +connection.getResponseCode() + ". 服务器不支持多线程下载              "+threadId+"线程");
+	            		logger.info("响应码是" +connection.getResponseCode() + ". 服务器不支持多线程下载              "+threadId+"线程");
 	            		if(connection!=null)  connection.disconnect();  
 	            		latch.countDown();
 	            	}
@@ -197,9 +205,9 @@ public class MultipartDownloader extends Downloader{
 		private synchronized void cleanTemp(File file) throws IOException {
 			String canonicalPath = file.getCanonicalPath();
 			if (file.delete()) {
-				System.out.println(canonicalPath + "删除成功");
+				logger.info(canonicalPath + "删除成功");
 			} else {
-				System.out.println(canonicalPath + "删除失败");
+				logger.info(canonicalPath + "删除失败");
 			}
 			;
 		}

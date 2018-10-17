@@ -21,7 +21,8 @@ public class FileLengthTools {
 			URL url = new URL(imageUrl);
 			connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            connection.setConnectTimeout(6 * 1000);
+            connection.setConnectTimeout(Const.ConnectionTimeout);
+            connection.setReadTimeout(Const.ReadTimeout);            
 			int code = connection.getResponseCode();		    
 			if (code == 200) {
 				int fileLength = connection.getContentLength();

@@ -10,10 +10,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.neo.yande.test;
 import com.neo.yande.entity.Downloader;
 import com.neo.yande.entity.Yande;
 
 public class SimpleDownLoader extends Downloader {
+	
+	private static Logger logger = LogManager.getLogger(SimpleDownLoader.class.getName());
 
 	@Override
 	public void endlessDownloader() {
@@ -27,11 +33,9 @@ public class SimpleDownLoader extends Downloader {
 			while (true) {
 				yande = queue.take();
 				if (yande != null && yande.isOverFlag() == false) {
-					System.out
-							.println(yande);
-					System.out
-							.println("threadId: " + threadId + " 获取数据yande, 创建时间为：" + yande.getCreateDate() + "，开始 "+ yande.getImageName() +" 下载！");
-					System.out.println("threadId: " + threadId + " 即将休眠1500ms...");
+					logger.info(yande);
+					logger.info("threadId: " + threadId + " 获取数据yande, 创建时间为：" + yande.getCreateDate() + "，开始 "+ yande.getImageName() +" 下载！");
+					logger.info("threadId: " + threadId + " 即将休眠1500ms...");
 					Thread.sleep(1500);
 					try {
 						URL url = new URL(yande.getPreviewImage());
@@ -56,8 +60,8 @@ public class SimpleDownLoader extends Downloader {
 							}
 							downThreadStream.close();
 							inputStream.close();
-							System.out.println("线程" + threadId + "最终下载量为： " + total + ",下载完毕!");
-							System.out.println("完成时间：   " + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(new Date()));
+							logger.info("线程" + threadId + "最终下载量为： " + total + ",下载完毕!");
+							logger.info("完成时间：   " + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(new Date()));
 
 							success(yande);
 						}
@@ -68,7 +72,7 @@ public class SimpleDownLoader extends Downloader {
 					}
 				} else {
 					queue.put(yande);
-					System.out.println("threadId: " + threadId + " 运行结束！即将退出");
+					logger.info("threadId: " + threadId + " 运行结束！即将退出");
 					break;
 				}
 			}

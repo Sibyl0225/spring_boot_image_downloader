@@ -31,16 +31,13 @@ public class YandeParse implements YandeParseInterface {
 	@Override
 	public List<Yande> getListFromYande(int page) {
 		String yandeUrl = new String(Const.yande_url);
-		if (page == 0 || page == 1)
-			yandeUrl += "/post";
-		if (page > 1)
-			yandeUrl += "/post?page=" + page;
+		if (page >= 1)  yandeUrl += "/post?page=" + page;
 		long start = System.currentTimeMillis();
 		List<Yande> yandes = new ArrayList<Yande>();
 		Document doc = null;
 		Elements selectlis = null;
 		try {
-			doc = Jsoup.connect(yandeUrl).get();
+			doc = Jsoup.connect(yandeUrl).timeout(Const.ConnectionTimeout).get();
 			logger.info("获取数据完毕，开始解析html……");
 			if(doc == null) {
 				logger.error("http error,为接收到返回数据！");
