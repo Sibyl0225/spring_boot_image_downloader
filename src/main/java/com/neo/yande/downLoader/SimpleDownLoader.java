@@ -32,11 +32,12 @@ public class SimpleDownLoader extends Downloader {
 		try {
 			while (true) {
 				yande = queue.take();
+				logger.info("##############################"+queue.size()+" remain...");
 				if (yande != null && yande.isOverFlag() == false) {
 					logger.info(yande);
 					logger.info("threadId: " + threadId + " 获取数据yande, 创建时间为：" + yande.getCreateDate() + "，开始 "+ yande.getImageName() +" 下载！");
 					logger.info("threadId: " + threadId + " 即将休眠1500ms...");
-					Thread.sleep(1500);
+					Thread.sleep(500);
 					try {
 						URL url = new URL(yande.getPreviewImage());
 						// 加载下载位置的文件
@@ -76,6 +77,7 @@ public class SimpleDownLoader extends Downloader {
 					break;
 				}
 			}
+			this.stop();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

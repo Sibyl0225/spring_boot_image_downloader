@@ -1,5 +1,7 @@
 package com.neo.yande;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -17,16 +19,24 @@ import com.neo.yande.entity.Yande;
 public class TaskTest extends DownloaderTask {
 	
 	private static Logger logger = LogManager.getLogger(test.class.getName());
+	
+	String todayDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
 		
-	final String  savePath = "C:/yande";
+	final String  savePath = "C:/"+todayDate+"/yande";
 	
 	int totalCount = 0;
 	
-	ArrayBlockingQueue<Yande> queues = new ArrayBlockingQueue<Yande>(200);
+	ArrayBlockingQueue<Yande> queues = new ArrayBlockingQueue<Yande>(1000);
 
 	public DownloaderTask initeDownloders(int total) {
 		
-		for (int j = 0; j < total; j++) {
+        File file = new File(savePath);
+        if(!file.exists()) {
+        	  file.mkdirs();
+        	  logger.info("mkdirs "+ savePath);
+        }
+		
+		for(int j = 0; j < total; j++) {
 //			Downloader downLoader = new MultipartDownloader();
 			Downloader downLoader = new SimpleDownLoader();
 			downLoader.commenDownloader(j, savePath, queues);
@@ -44,6 +54,7 @@ public class TaskTest extends DownloaderTask {
 			List<Yande> yandes = null;
 			try {				
 				yandes = yandeParse.getListFromYande(page);
+				logger.info("get data of "+page+" page!");
 			} catch (Exception e) {
 				logger.info("some error in parse "+page+" page!");
 				continue;

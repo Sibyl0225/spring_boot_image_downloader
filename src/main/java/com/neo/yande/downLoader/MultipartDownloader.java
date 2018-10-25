@@ -57,6 +57,7 @@ public class MultipartDownloader extends Downloader{
 					break;
 				}
 			}
+			this.stop();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

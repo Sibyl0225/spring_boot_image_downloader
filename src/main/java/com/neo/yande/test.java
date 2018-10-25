@@ -40,7 +40,7 @@ public class test {
 //			downLoader.start();
 //		}
 		
-		new TaskTest().initeDownloders(3).initeQueues(1, 5);
+		new TaskTest().initeDownloders(8).initeQueues(70, 100);
 
 
 	}
