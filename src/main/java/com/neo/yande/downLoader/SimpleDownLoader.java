@@ -77,7 +77,7 @@ public class SimpleDownLoader extends Downloader {
 					break;
 				}
 			}
-			this.stop();
+			//this.stop();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

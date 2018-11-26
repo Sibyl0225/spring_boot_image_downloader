@@ -89,7 +89,7 @@ public class YandeParse implements YandeParseInterface {
 				yande.setLargeSizeImage(largeImg);
 				String imageName = FilenameUtils.getName(largeImg);
 				try {
-					String decodeImageName = URLDecoder.decode(imageName,"UTF-8");
+					String decodeImageName = URLDecoder.decode(imageName,"UTF-8").replaceAll("\\?", "");
 					yande.setImageName(decodeImageName);
 				} catch (UnsupportedEncodingException e) {
 					yande.setImageName(imageName);

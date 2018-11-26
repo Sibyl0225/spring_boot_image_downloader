@@ -40,9 +40,13 @@ public class test {
 //			downLoader.start();
 //		}
 		
-		new TaskTest().initeDownloders(8).initeQueues(70, 100);
+		new TaskTest().initeDownloders(8).initeQueues(1, 10);
+		
+//		String url = "animal_ears gochuumon_wa_usagi_desu_ka? hoto_cocoa hoto_mocha kafuu_chino koi nekomimi pantyhose stockings thighhighs.jpg" ;
+//		url = url.replaceAll("\\?", "");	
+//		System.out.println(url);
 
-
+   
 	}
 
 }
