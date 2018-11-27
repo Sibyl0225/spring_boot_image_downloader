@@ -20,10 +20,11 @@ import com.neo.yande.entity.Yande;
 public class SimpleDownLoader extends Downloader {
 	
 	private static Logger logger = LogManager.getLogger(SimpleDownLoader.class.getName());
+	public static ArrayBlockingQueue<Yande> queue = null;
 
 	@Override
 	public void endlessDownloader() {
-		ArrayBlockingQueue<Yande> queue = super.getQueue();
+		queue = super.getQueue();
 		String savePath = super.getSavePath();
 		int threadId = super.getThreadId();
 		if (queue == null)
@@ -77,12 +78,11 @@ public class SimpleDownLoader extends Downloader {
 					break;
 				}
 			}
-			//this.stop();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Override
 	public void success(Yande yande) {
 		System.out.println("下载成功！");
