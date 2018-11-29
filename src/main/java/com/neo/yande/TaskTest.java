@@ -50,7 +50,7 @@ public class TaskTest extends DownloaderTask {
 
 		YandeParse yandeParse = new YandeParse();
 		
-		for (int page = startPage; page < endPage; page++) {
+		for (int page = startPage; page <= endPage; page++) {
 			List<Yande> yandes = null;
 			try {				
 				yandes = yandeParse.getListFromYande(page);
@@ -60,7 +60,7 @@ public class TaskTest extends DownloaderTask {
 				continue;
 			}
 			for (Yande yande : yandes) {
-				yande.setOverFlag(false);
+				yande.setOverFlag(0);
 				yande.setCreateDate(DateUtil.format(new Date()));
 				try {
 					queues.put(yande);
@@ -73,13 +73,18 @@ public class TaskTest extends DownloaderTask {
 		}
 
 		Yande enfYande = new Yande();
-		enfYande.setOverFlag(true);
+		enfYande.setOverFlag(1);
 		try {
 			queues.put(enfYande);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		return this;
+	}
+
+	@Override
+	public int getQueuesSize() {
+		return queues.size();
 	}
 
 }

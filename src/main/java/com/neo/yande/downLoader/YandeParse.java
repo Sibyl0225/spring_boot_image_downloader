@@ -4,11 +4,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.slf4j.Log4jLogger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -90,6 +91,12 @@ public class YandeParse implements YandeParseInterface {
 				String imageName = FilenameUtils.getName(largeImg);
 				try {
 					String decodeImageName = URLDecoder.decode(imageName,"UTF-8").replaceAll("\\?", "");
+					
+					Pattern pattern = Pattern.compile("[\\s\\\\/:\\*\\?\\\"<>\\|]");
+			        Matcher matcher = pattern.matcher(decodeImageName);
+
+			        decodeImageName= matcher.replaceAll(""); // 将匹配到的非法字符以空替换
+					
 					yande.setImageName(decodeImageName);
 				} catch (UnsupportedEncodingException e) {
 					yande.setImageName(imageName);

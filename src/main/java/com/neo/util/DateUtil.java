@@ -19,5 +19,9 @@ public class DateUtil {
 		DateFormat dateFormat = df.get();
 		return dateFormat.format(date);
 	}
+	
+	public static String getDate() {
+		return format(new Date());
+	}
 
 }

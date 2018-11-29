@@ -1,26 +1,53 @@
 package com.neo.yande.entity;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 import org.apache.commons.beanutils.BeanMap;
 
-public class Yande {
 	
+@Entity
+public class Yande implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue
+	private Long id;
+	
+	@Column(nullable = false, unique = true)	
 	public String imageId;
+	
+	@Column(nullable = false)
 	public String imageName;
+	
+	@Column(nullable = false)
 	public String largeSizeImage;
+	
+	@Column(nullable = false)
 	public String previewImage;
 	
+	@Column(nullable = false)
 	public boolean hadDownload;
+	
+	@Column(nullable = false)
 	public String createDate;
 	
-	public String imageResolution;
+	@Column(nullable = true)
+	public String imageResolution;//分辨率
+	
+	@Column(name = "filesize",nullable = true)
 	public long imageFileSize;
 	
-	public boolean overFlag;
+	@Column(nullable = true,columnDefinition="int default 0")
+	public int overFlag ;
 	
 	@Override
 	public String toString() {
@@ -81,10 +108,10 @@ public class Yande {
 		org.apache.commons.beanutils.BeanMap beanMap = new  org.apache.commons.beanutils.BeanMap(this);
 		return beanToHashMap(beanMap);
 	}
-	public boolean isOverFlag() {
+	public int isOverFlag() {
 		return overFlag;
 	}
-	public void setOverFlag(boolean overFlag) {
+	public void setOverFlag(int overFlag) {
 		this.overFlag = overFlag;
 	}
 	/**

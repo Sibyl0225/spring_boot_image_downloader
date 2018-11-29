@@ -7,6 +7,8 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
@@ -27,6 +29,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -37,6 +41,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.LongSerializationPolicy;
 import com.google.gson.reflect.TypeToken;
+import com.neo.yande.downLoader.MultipartDownloader;
 import com.neo.yande.entity.Yande;
 
 import net.sf.json.JSONArray;
@@ -50,18 +55,21 @@ public class Poster {
             .setConnectionRequestTimeout(15000)
             .build();
 	
+	private static Logger logger = LogManager.getLogger(Poster.class.getName());
+	
 	private static final String calback = "jQuery1113018816295356722046_1543202774853";
 	private static final String Search = "search";
 	private static final String Url = "url";
 	private static  String Source = "source";
 	private static  int Limit = 20;
 	private static  int total = 0;
+	private static  JsonArray yandeList = new  JsonArray();
 	
 	public static void main(String[] args) throws Exception{ 
 		String keyword = "aimer";
-		for(int i=0;i<= 1;i++) {
-			List<Yande> yandes = getQueryListByKeyword(keyword,i);
-			System.out.println(yandes);
+		for(int i=0;i<= 20;i++) {
+			List<Yande> querys = getQueryListByKeyword(keyword,i);
+			System.out.println(querys);
 		}
 
 	}
@@ -70,6 +78,10 @@ public class Poster {
 		
 		JsonArray JsonAry = postForList( keyword,j);
 		List<Yande> yandes = new ArrayList<Yande>();
+		logger.info("————————————————————————————————————————————————————————————");		
+		yandeList.addAll(JsonAry);
+		logger.info("yandeList "+j+" :"+yandeList.toString());
+		logger.info("————————————————————————————————————————————————————————————");
 		for(int i=0;i<JsonAry.size();i++) {
 //		    "id": 552448584,
 //		    "name": "Name.",
@@ -90,7 +102,12 @@ public class Poster {
 			String source = getValueToString(contacts,"source");//
 			String size = getValueToString(contacts,"size");//
 			String url = getValueToString(contacts,"url");//	
-			String br = getValueToString(contacts,"br");//				
+			String br = getValueToString(contacts,"br");//	
+			
+			Pattern pattern = Pattern.compile("[\\s\\\\/:\\*\\?\\\"<>\\|]");
+	        Matcher matcher = pattern.matcher(name);
+
+	        name= matcher.replaceAll(""); // 将匹配到的非法字符以空替换
 	
 			Yande yande = new Yande();
 			yande.setImageFileSize(Integer.valueOf(size));
@@ -123,8 +140,8 @@ public class Poster {
         for (int i = 0; i < queryList.size(); i++) {			     
         	postForUrl(queryList.get(i).getAsJsonObject());
         	//暂停30秒
-			Thread.sleep(3000);
-			System.out.println("暂停3秒！");
+			Thread.sleep(250);
+			System.out.println("暂停0.25秒！");
         	total++;
 		}
         System.out.println(queryList);

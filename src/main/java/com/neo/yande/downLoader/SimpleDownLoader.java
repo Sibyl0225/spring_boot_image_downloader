@@ -34,7 +34,7 @@ public class SimpleDownLoader extends Downloader {
 			while (true) {
 				yande = queue.take();
 				logger.info("##############################"+queue.size()+" remain...");
-				if (yande != null && yande.isOverFlag() == false) {
+				if (yande != null && yande.isOverFlag() == 0) {
 					logger.info(yande);
 					logger.info("threadId: " + threadId + " 获取数据yande, 创建时间为：" + yande.getCreateDate() + "，开始 "+ yande.getImageName() +" 下载！");
 					logger.info("threadId: " + threadId + " 即将休眠1500ms...");

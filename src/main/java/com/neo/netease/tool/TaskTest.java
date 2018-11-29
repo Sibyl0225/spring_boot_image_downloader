@@ -49,19 +49,26 @@ public class TaskTest extends DownloaderTask {
 
 	public DownloaderTask initeQueues(int startPage, int endPage) {
 		
+
+		Yande enfYande = new Yande();
+		enfYande.setOverFlag(1);
+		try {
+			queues.put(enfYande);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		for (int page = startPage; page <= endPage; page++) {
 			List<Yande> yandes = null;
 			try {				
 				yandes = Poster.getQueryListByKeyword(keyword,startPage);;
-				//暂停30秒
-				Thread.sleep(10000);
 				logger.info("get data of "+page+" page!暂停10秒!");
 			} catch (Exception e) {
 				logger.info("some error in parse "+page+" page!");
 				continue;
 			}
 			for (Yande yande : yandes) {
-				yande.setOverFlag(false);
+				yande.setOverFlag(0);
 				yande.setCreateDate(DateUtil.format(new Date()));
 				try {
 					queues.put(yande);
@@ -73,13 +80,6 @@ public class TaskTest extends DownloaderTask {
 			}
 		}
 
-		Yande enfYande = new Yande();
-		enfYande.setOverFlag(true);
-		try {
-			queues.put(enfYande);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		return this;
 	}
 	
