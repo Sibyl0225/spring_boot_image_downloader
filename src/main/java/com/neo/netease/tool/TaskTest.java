@@ -86,6 +86,12 @@ public class TaskTest extends DownloaderTask {
 	
 	public int getQueuesSize() {
 		return queues.size();
+	}
+
+	@Override
+	public DownloaderTask initeRedisQueues() {
+		// TODO Auto-generated method stub
+		return null;
 	};
 
 }

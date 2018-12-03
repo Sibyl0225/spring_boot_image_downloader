@@ -104,7 +104,7 @@ public class Yande implements Serializable {
 		this.imageFileSize = imageFileSize;
 	}
 	
-	public HashMap<String , Object> yandeToMap(){
+	public HashMap<String , String> yandeToMap(){
 		org.apache.commons.beanutils.BeanMap beanMap = new  org.apache.commons.beanutils.BeanMap(this);
 		return beanToHashMap(beanMap);
 	}
@@ -119,17 +119,16 @@ public class Yande implements Serializable {
 	 * @param beanMap
 	 * @return
 	 */
-	private HashMap<String, Object> beanToHashMap(BeanMap beanMap) {
-		HashMap<String, Object> yandeMap = new HashMap<String, Object>();
+	private HashMap<String, String> beanToHashMap(BeanMap beanMap) {
+		HashMap<String, String> yandeMap = new HashMap<String, String>();
 		Iterator<Entry<Object, Object>> beanMapIterator = beanMap.entryIterator();
-		if(beanMapIterator.hasNext()) {
+		while(beanMapIterator.hasNext()) {
 			Map.Entry<Object, Object> entry = beanMapIterator.next();
 			String key = entry.getKey().toString();
-			Object val = entry.getValue();
-			//
+			String val = entry.getValue().toString();
 			if(val != null )  yandeMap.put(key,val);
 		}
-		return null;
+		return yandeMap;
 	}
 
 }

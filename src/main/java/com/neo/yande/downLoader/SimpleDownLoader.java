@@ -12,15 +12,23 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.neo.entity.YandeEntry;
+import com.neo.mapper.YandeMapper;
 import com.neo.yande.test;
 import com.neo.yande.entity.Downloader;
+import com.neo.yande.entity.RedisClient;
 import com.neo.yande.entity.Yande;
+
+import redis.clients.jedis.Jedis;
 
 public class SimpleDownLoader extends Downloader {
 	
 	private static Logger logger = LogManager.getLogger(SimpleDownLoader.class.getName());
 	public static ArrayBlockingQueue<Yande> queue = null;
+	
+	private static RedisClient redisClient = new RedisClient();
 
 	@Override
 	public void endlessDownloader() {
@@ -74,8 +82,8 @@ public class SimpleDownLoader extends Downloader {
 					}
 				} else {
 					queue.put(yande);
-					logger.info("threadId: " + threadId + " 运行结束！即将退出");
-					break;
+					Thread.sleep(3000l);
+					logger.info("threadId: " + threadId + " 休眠！");
 				}
 			}
 		} catch (InterruptedException e) {
@@ -85,11 +93,19 @@ public class SimpleDownLoader extends Downloader {
 	
 	@Override
 	public void success(Yande yande) {
-		System.out.println("下载成功！");
+		yande.setHadDownload(true);
+		yande.setOverFlag(1);
+		Jedis resource = redisClient.jedisPool.getResource();
+		String hmResuly = resource.hmset(yande.getImageId(), yande.yandeToMap());
+		resource.close();
+		System.out.println("下载成功！hmResuly:"+hmResuly);
 	}
 
 	@Override
 	public void fail(Yande yande) {
+		yande.setHadDownload(false);
+		yande.setOverFlag(1);
+		
 		System.out.println("下载失败！");
 	}
 

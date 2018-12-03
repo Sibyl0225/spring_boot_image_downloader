@@ -1,0 +1,94 @@
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:fragment="htmlhead">
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+    <link rel="shortcut icon" type="image/png" th:href="@{/images/favicon.png}"></link>
+
+   	<title th:text="${title}">(title)</title>
+
+  	<link th:href="@{/webjars/bootstrap/3.0.3/dist/css/bootstrap.css}" rel="stylesheet"></link>
+  	<link th:href="@{/css/starter.css}" rel="stylesheet"></link>
+  </head>
+
+  <body>
+    <div th:fragment="navbar" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Project name</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+			<h4 class="float-left mt-2">Musics : View all</h4>
+			<button type="button" id="myButton" class="btn btn-primary" onclick="formSubmit()">提交</button>
+			<form action="" id="form">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+					    <th><input id="selectAll" type="checkbox"/></th>
+						<th>ID</th>
+						<th>歌曲名称</th>
+						<th>专辑</th>	
+						<th>来源</th>
+						<th>比特率</th>
+						<th>文件大小</th>	
+						<th>文件地址</th>					
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:if="${musics.empty}">
+						<td colspan="8">No Music</td>
+					</tr>
+					<tr th:each="music : ${musics}">
+					    <td ><input type="checkbox" name="ids" th:value="${music.name}"/></td>
+						<td ><a target="_blank" th:href="@{/getMusic(id=${music.id})}" th:text="${music.id}" ></a></td>
+						<td th:text="${music.name}"></td>
+						<td th:text="${music.album}"></td>		
+						<td th:text="${music.source}"></td>
+						<td th:text="${music.br}"></td>
+						<td th:text="${music.size}"></td>	
+						<td ><a href="" th:href="${music.url}" th:text="${music.name}+'.mp3'"></a></td>																														
+					</tr>
+				</tbody>
+			</table>
+		</form>		
+    </div>
+
+    <div th:fragment="footer" id="footer">
+      <div class="container">
+        <p class="muted credit">Spring MVC/Thymeleaf/Bootstrap Project Template</p>
+      </div>
+      <script th:src="@{/webjars/jquery/2.0.3/jquery.min.js}"></script>
+      <script th:src="@{/webjars/bootstrap/3.0.3/dist/js/bootstrap.min.js}"></script>
+    </div>
+	<script type="text/javascript">
+		function formSubmit(){			
+			var isChecked = $("#selectAll").prop("checked");
+			alert(isChecked);
+			var checkBoxIds = $("input[type='checkbox']");
+			var $form = $("#form");
+			var ids = $form.serialize();
+			console.log(ids);			
+		}
+	</script>
+
+</body>
+</html>

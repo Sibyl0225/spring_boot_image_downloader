@@ -40,7 +40,11 @@ public class test {
 //			downLoader.start();
 //		}
 		
-		new TaskTest().initeDownloders(3).initeQueues(10, 10);
+//		new TaskTest().initeDownloders(3).initeQueues(10, 10);
+		
+//		new TaskTest().initeQueues(11, 20);
+		
+      new TaskTest().initeRedisQueues().initeDownloders(1);
 		
 //		String url = "animal_ears gochuumon_wa_usagi_desu_ka? hoto_cocoa hoto_mocha kafuu_chino koi nekomimi pantyhose stockings thighhighs.jpg" ;
 //		url = url.replaceAll("\\?", "");	
