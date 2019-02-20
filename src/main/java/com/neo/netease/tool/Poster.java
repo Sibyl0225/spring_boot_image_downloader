@@ -67,7 +67,7 @@ public class Poster {
 	
 	public static void main(String[] args) throws Exception{ 
 		String keyword = "aimer";
-		for(int i=0;i<= 20;i++) {
+		for(int i=0;i<= 1;i++) {
 			List<Yande> querys = getQueryListByKeyword(keyword,i);
 			System.out.println(querys);
 		}
@@ -258,7 +258,7 @@ public class Poster {
     	request.setHeader("Connection", "keep-alive"); 
     	//Content-Length: 55
     	request.setHeader("Content-Type","application/x-www-form-urlencoded; charset=UTF-8");
-    	request.setHeader("Cookie", "UM_distinctid=1674a6af0ad230-041d0e6676c4cb-2711938-100200-1674a6af0ae7a5; CNZZDATA1260050386=1928895977-1543139953-http%253A%252F%252Flink.zhihu.com%252F%7C1543199318");
+    	request.setHeader("Cookie", "UM_distinctid=168ebb4fa473bc-013fd07c87a7f8-3c604504-100200-168ebb4fa484b3; CNZZDATA1260050386=1185778790-1550140618-%7C1550140618");
     	request.setHeader("Host", "music.zhuolin.wang");
     	//Origin: http://music.zhuolin.wang
 

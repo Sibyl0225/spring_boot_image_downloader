@@ -1,17 +1,16 @@
 package com.neo.yande.entity;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
+import org.apache.commons.beanutils.BeanMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-
-import org.apache.commons.beanutils.BeanMap;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 	
 @Entity
@@ -125,8 +124,8 @@ public class Yande implements Serializable {
 		while(beanMapIterator.hasNext()) {
 			Map.Entry<Object, Object> entry = beanMapIterator.next();
 			String key = entry.getKey().toString();
-			String val = entry.getValue().toString();
-			if(val != null )  yandeMap.put(key,val);
+			Object val = entry.getValue();
+			if(val != null )  yandeMap.put(key,val.toString());
 		}
 		return yandeMap;
 	}

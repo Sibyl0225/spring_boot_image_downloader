@@ -1,8 +1,5 @@
 package com.neo.yande;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class test {
 	
 //	private static Logger logger = LogManager.getLogger(test.class.getName());
@@ -41,11 +38,11 @@ public class test {
 //		}
 		
 //		new TaskTest().initeDownloders(3).initeQueues(10, 10);
-		
-//		new TaskTest().initeQueues(11, 20);
-		
-      new TaskTest().initeRedisQueues().initeDownloders(1);
-		
+
+//		new TaskTest().initeQueues(0, 100);
+
+        new TaskTest().initeRedisQueues().initeDownloders(6);
+//
 //		String url = "animal_ears gochuumon_wa_usagi_desu_ka? hoto_cocoa hoto_mocha kafuu_chino koi nekomimi pantyhose stockings thighhighs.jpg" ;
 //		url = url.replaceAll("\\?", "");	
 //		System.out.println(url);

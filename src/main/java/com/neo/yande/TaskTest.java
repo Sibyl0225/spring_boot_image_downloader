@@ -1,19 +1,5 @@
 package com.neo.yande;
 
-import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.neo.util.DateUtil;
 import com.neo.yande.downLoader.DownloaderTask;
 import com.neo.yande.downLoader.SimpleDownLoader;
@@ -21,10 +7,14 @@ import com.neo.yande.downLoader.YandeParse;
 import com.neo.yande.entity.Downloader;
 import com.neo.yande.entity.RedisClient;
 import com.neo.yande.entity.Yande;
-
-import junit.framework.Assert;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ShardedJedis;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class TaskTest extends DownloaderTask {
 	
@@ -38,7 +28,7 @@ public class TaskTest extends DownloaderTask {
 	
 	int totalCount = 0;
 	
-	ArrayBlockingQueue<Yande> queues = new ArrayBlockingQueue<Yande>(1000);
+	ArrayBlockingQueue<Yande> queues = new ArrayBlockingQueue<Yande>(10000);
 
 	public DownloaderTask initeDownloders(int total) {
 		
@@ -61,7 +51,7 @@ public class TaskTest extends DownloaderTask {
 
 
 		YandeParse yandeParse = new YandeParse();
-		
+        Jedis jedis = redisClient.jedisPool.getResource();
 		for (int page = startPage; page <= endPage; page++) {
 			List<Yande> yandes = null;
 			try {				
@@ -71,7 +61,7 @@ public class TaskTest extends DownloaderTask {
 				logger.info("some error in parse "+page+" page!");
 				continue;
 			}
-			ShardedJedis jedis = redisClient.shardedJedisPool.getResource();
+
 			for (Yande yande : yandes) {
 				yande.setOverFlag(0);
 				yande.setCreateDate(DateUtil.format(new Date()));
@@ -87,6 +77,7 @@ public class TaskTest extends DownloaderTask {
 						Map<String, String> yandeMap = jedis.hgetAll(yande.getImageId());
 						if(yandeMap.get("hadDownload").equals("true")) {							
 							logger.error(yande.getImageId() + "had been download...");
+                            System.exit(0);  //如果出现已下载就不再循环
 						}else {
 							logger.info(yande);
 							queues.put(yande);	

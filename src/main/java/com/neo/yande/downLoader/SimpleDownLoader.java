@@ -1,5 +1,12 @@
 package com.neo.yande.downLoader;
 
+import com.neo.yande.entity.Downloader;
+import com.neo.yande.entity.RedisClient;
+import com.neo.yande.entity.Yande;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import redis.clients.jedis.Jedis;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,19 +16,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.neo.entity.YandeEntry;
-import com.neo.mapper.YandeMapper;
-import com.neo.yande.test;
-import com.neo.yande.entity.Downloader;
-import com.neo.yande.entity.RedisClient;
-import com.neo.yande.entity.Yande;
-
-import redis.clients.jedis.Jedis;
 
 public class SimpleDownLoader extends Downloader {
 	
@@ -80,10 +74,10 @@ public class SimpleDownLoader extends Downloader {
 						fail(yande);
 						e.printStackTrace();
 					}
-				} else {
-					queue.put(yande);
-					Thread.sleep(3000l);
-					logger.info("threadId: " + threadId + " 休眠！");
+                } else {
+                    queue.put(yande);
+//                    logger.info("threadId: " + threadId + " 休眠！");
+//                    Thread.sleep(5l);
 				}
 			}
 		} catch (InterruptedException e) {
