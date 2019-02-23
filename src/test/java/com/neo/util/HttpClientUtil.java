@@ -33,6 +33,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -44,7 +45,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2018/05/09.
  */
-public class MyHttpClientUtils {
+public class HttpClientUtil {
 
     private static HttpClientContext context = HttpClientContext.create();
     private static RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(200).setSocketTimeout(500)
@@ -187,25 +188,27 @@ public class MyHttpClientUtils {
 
     }
 
-//    public static void main(String[] args){
-////        CloseableHttpResponse response = HttpClientUtil.doGet("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxb2ebe42765aad029&secret=720661590f720b1f501ab3f390f80d52","");
-////        System.out.println(HttpClientUtil.toString(response));
-////
-////        response = HttpClientUtil.doPost("http://www.baidu.com/cgi-bin/token?grant_type=client_credential&appid=wxb2ebe42765aad029&secret=720661590f720b1f501ab3f390f80d52",
-////                new ArrayList<NameValuePair>());
-////        System.out.println(HttpClientUtil.toString(response));
+    public static void main(String[] args){
+//        CloseableHttpResponse response = HttpClientUtil.doGet("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxb2ebe42765aad029&secret=720661590f720b1f501ab3f390f80d52","");
+//        System.out.println(HttpClientUtil.toString(response));
+//
+//        response = HttpClientUtil.doPost("http://www.baidu.com/cgi-bin/token?grant_type=client_credential&appid=wxb2ebe42765aad029&secret=720661590f720b1f501ab3f390f80d52",
+//                new ArrayList<NameValuePair>());
+//        System.out.println(HttpClientUtil.toString(response));
         String url= "http://site.baidu.com/img/logo_web2.gif";
-        CloseableHttpResponse response = MyHttpClientUtils.doGet(url,"");
+        CloseableHttpResponse response = doGet(url,"");
         HttpEntity responseEntity = response.getEntity();
-        boolean isStream  = responseEntity.isStreaming();
+        boolean isStream = responseEntity.isStreaming();
 
         System.out.println("流文件："+isStream);
         if(isStream){
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             try {
-                File file = new File(FilenameUtils.getName(url));
-                responseEntity.writeTo(baos);
-                FileUtils.writeByteArrayToFile(file,baos.toByteArray());
+                File file = FileUtils.getFile(FilenameUtils.getName(url));
+                FileOutputStream fileOutputStream = FileUtils.openOutputStream(file, false);
+                responseEntity.writeTo(fileOutputStream);
+                fileOutputStream.flush();
+                fileOutputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -230,5 +233,5 @@ public class MyHttpClientUtils {
 //                                                Tells whether this entity depends on an underlying stream.
 //        void	writeTo(OutputStream outstream)
 //                                                 Writes the entity content out to the output stream.
-//    }
+    }
 }
