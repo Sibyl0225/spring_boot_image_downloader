@@ -1,4 +1,7 @@
 package com.neo.util;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -28,19 +31,21 @@ import org.apache.http.util.EntityUtils;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by Administrator on 2018/05/09.
  */
-public class HttpClientUtil {
+public class MyHttpClientUtils {
+
     private static HttpClientContext context = HttpClientContext.create();
     private static RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(200).setSocketTimeout(500)
             .setConnectionRequestTimeout(200).setCookieSpec(CookieSpecs.STANDARD_STRICT).
@@ -178,14 +183,52 @@ public class HttpClientUtil {
             }
         }
         return result;
+
+
     }
 
-    public static void main(String[] args){
-        CloseableHttpResponse response = HttpClientUtil.doGet("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxb2ebe42765aad029&secret=720661590f720b1f501ab3f390f80d52","");
-        System.out.println(HttpClientUtil.toString(response));
+//    public static void main(String[] args){
+////        CloseableHttpResponse response = HttpClientUtil.doGet("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxb2ebe42765aad029&secret=720661590f720b1f501ab3f390f80d52","");
+////        System.out.println(HttpClientUtil.toString(response));
+////
+////        response = HttpClientUtil.doPost("http://www.baidu.com/cgi-bin/token?grant_type=client_credential&appid=wxb2ebe42765aad029&secret=720661590f720b1f501ab3f390f80d52",
+////                new ArrayList<NameValuePair>());
+////        System.out.println(HttpClientUtil.toString(response));
+        String url= "http://site.baidu.com/img/logo_web2.gif";
+        CloseableHttpResponse response = MyHttpClientUtils.doGet(url,"");
+        HttpEntity responseEntity = response.getEntity();
+        boolean isStream  = responseEntity.isStreaming();
 
-        response = HttpClientUtil.doPost("http://www.baidu.com/cgi-bin/token?grant_type=client_credential&appid=wxb2ebe42765aad029&secret=720661590f720b1f501ab3f390f80d52",
-                new ArrayList<NameValuePair>());
-        System.out.println(HttpClientUtil.toString(response));
-    }
+        System.out.println("流文件："+isStream);
+        if(isStream){
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try {
+                File file = new File(FilenameUtils.getName(url));
+                responseEntity.writeTo(baos);
+                FileUtils.writeByteArrayToFile(file,baos.toByteArray());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+//        void	consumeContent()
+//                                                Deprecated. (4.1) Use EntityUtils.consume(HttpEntity)
+//        InputStream	getContent()
+//                                                Returns a content stream of the entity.
+//        Header	getContentEncoding()
+//                                                Obtains the Content-Encoding header, if known.
+//        long	getContentLength()
+//                                                Tells the length of the content, if known.
+//        Header	getContentType()
+//                                                Obtains the Content-Type header, if known.
+//        boolean	isChunked()
+//                                                Tells about chunked encoding for this entity.
+//        boolean	isRepeatable()
+//                                                Tells if the entity is capable of producing its data more than once.
+//        boolean	isStreaming()
+//                                                Tells whether this entity depends on an underlying stream.
+//        void	writeTo(OutputStream outstream)
+//                                                 Writes the entity content out to the output stream.
+//    }
 }

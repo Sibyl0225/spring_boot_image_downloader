@@ -46,6 +46,23 @@ public class SimpleDownLoader extends Downloader {
 						// 加载下载位置的文件
 						File image = new File(savePath, yande.getImageName());
 
+//                        CloseableHttpResponse response = My.doGet(url,"");
+//                        HttpEntity responseEntity = response.getEntity();
+//                        boolean isStreaming;
+//                        if (responseEntity.isStreaming()) isStreaming = true;
+//                        else isStreaming = false;
+//                        System.out.println("流文件："+isStreaming);
+//                        if(isStreaming){
+//                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                            try {
+//                                responseEntity.writeTo(baos);
+//                                FileUtils.writeByteArrayToFile(image,baos.toByteArray());
+//                                success(yande);
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+
 						RandomAccessFile downThreadStream = new RandomAccessFile(image, "rwd");
 						HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 						connection.setRequestMethod("GET");

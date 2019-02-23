@@ -1,51 +1,31 @@
 package com.neo.netease.tool;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.google.gson.*;
+import com.neo.yande.entity.Yande;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.GzipDecompressingEntity;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.LongSerializationPolicy;
-import com.google.gson.reflect.TypeToken;
-import com.neo.yande.downLoader.MultipartDownloader;
-import com.neo.yande.entity.Yande;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Poster {
 	
@@ -278,12 +258,14 @@ public class Poster {
 		return pairs;
 	}
 
-	/**
-	 * 关键词搜索
-	 * 
-	 * @param id
-	 * @return
-	 */
+    /**
+     * 关键词搜索
+     * @param keyword
+     * @param source
+     * @param page
+     * @param limit
+     * @return
+     */
 	public static ArrayList<BasicNameValuePair> getKeyWordQueryNameValuePairs(String keyword,String source,int page,int limit) {
 		ArrayList<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
 		pairs.add(new BasicNameValuePair("types", "search"));
@@ -298,7 +280,7 @@ public class Poster {
 	/**
 	 * 发送Post请求
 	 * @param httpPost
-	 * @return
+	 * @return String
 	 */
 	private static String sendHttpPost(HttpPost httpPost) {
 		CloseableHttpClient httpClient = null;
