@@ -21,6 +21,7 @@ public class SimpleDownLoader extends Downloader {
 	
 	private static Logger logger = LogManager.getLogger(SimpleDownLoader.class.getName());
 	public static ArrayBlockingQueue<Yande> queue = null;
+    public static long sleepTime = 5000l;
 	
 	private static RedisClient redisClient = new RedisClient();
 
@@ -93,8 +94,9 @@ public class SimpleDownLoader extends Downloader {
 					}
                 } else {
                     queue.put(yande);
-//                    logger.info("threadId: " + threadId + " 休眠！");
-//                    Thread.sleep(5l);
+                    logger.info("threadId: " + threadId + " 休眠！");
+                    Thread.sleep(sleepTime);
+                    sleepTime+=5000l;
 				}
 			}
 		} catch (InterruptedException e) {

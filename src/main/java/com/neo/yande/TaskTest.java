@@ -52,44 +52,48 @@ public class TaskTest extends DownloaderTask {
 
 		YandeParse yandeParse = new YandeParse();
         Jedis jedis = redisClient.jedisPool.getResource();
-		for (int page = startPage; page <= endPage; page++) {
-			List<Yande> yandes = null;
-			try {				
-				yandes = yandeParse.getListFromYande(page);
-				logger.info("get data of "+page+" page!");
-			} catch (Exception e) {
-				logger.info("some error in parse "+page+" page!");
-				continue;
-			}
+        boolean isHadDownLoad = false;
+        int page = startPage;
+		while (page <= endPage && !isHadDownLoad) {
+            List<Yande> yandes = null;
+            try {
+                yandes = yandeParse.getListFromYande(page);
+                logger.info("get data of "+page+" page!");
+            } catch (Exception e) {
+                logger.info("some error in parse "+page+" page!");
+                continue;
+            }
 
-			for (Yande yande : yandes) {
-				yande.setOverFlag(0);
-				yande.setCreateDate(DateUtil.format(new Date()));
-				try {
-									
-					HashMap<String, String> yandeToMap = yande.yandeToMap();
-					//插入
-					if(!jedis.exists(yande.getImageId())) {						
-						jedis.hmset(yande.getImageId(), yandeToMap);
-						logger.info(yande);
-						queues.put(yande);	
-					}else {
-						Map<String, String> yandeMap = jedis.hgetAll(yande.getImageId());
-						if(yandeMap.get("hadDownload").equals("true")) {							
-							logger.error(yande.getImageId() + "had been download...");
-                            System.exit(0);  //如果出现已下载就不再循环
-						}else {
-							logger.info(yande);
-							queues.put(yande);	
-						}
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				totalCount++;
-				logger.info("put   " +totalCount+ "   " + yande.getImageId() +" into queue!");
-			}
-		}
+            for (Yande yande : yandes) {
+                yande.setOverFlag(0);
+                yande.setCreateDate(DateUtil.format(new Date()));
+                try {
+
+                    HashMap<String, String> yandeToMap = yande.yandeToMap();
+                    //插入
+                    if(!jedis.exists(yande.getImageId())) {
+                        jedis.hmset(yande.getImageId(), yandeToMap);
+                        logger.info(yande);
+                        queues.put(yande);
+                    }else {
+                        Map<String, String> yandeMap = jedis.hgetAll(yande.getImageId());
+                        if(yandeMap.get("hadDownload").equals("true")) {
+                            logger.error(yande.getImageId() + "had been download...");
+                            isHadDownLoad = true;
+                            break;
+                        }else {
+                            logger.info(yande);
+                            queues.put(yande);
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                totalCount++;
+                logger.info("put   " +totalCount+ "   " + yande.getImageId() +" into queue!");
+            }
+            page++;
+        }
 
 		Yande enfYande = new Yande();
 		enfYande.setOverFlag(1);

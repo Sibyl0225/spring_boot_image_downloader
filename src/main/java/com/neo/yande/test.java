@@ -1,5 +1,10 @@
 package com.neo.yande;
 
+import com.neo.yande.downLoader.DownloaderTask;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class test {
 	
 //	private static Logger logger = LogManager.getLogger(test.class.getName());
@@ -39,12 +44,21 @@ public class test {
 		
 //		new TaskTest().initeDownloders(3).initeQueues(10, 10);
 
-//		new TaskTest().initeQueues(0, 100);
+        DownloaderTask downloaderTask = new TaskTest().initeQueues(0, 100);
 
-        new TaskTest().initeRedisQueues().initeDownloders(6);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                downloaderTask.initeRedisQueues().initeDownloders(8);
+            }
+        },3000l);
+
+
+
 //
 //		String url = "animal_ears gochuumon_wa_usagi_desu_ka? hoto_cocoa hoto_mocha kafuu_chino koi nekomimi pantyhose stockings thighhighs.jpg" ;
-//		url = url.replaceAll("\\?", "");	
+//		url = url.replaceAll("\\?", "");
 //		System.out.println(url);
 
    
