@@ -1,5 +1,12 @@
 package com.neo.yande.downLoader;
 
+import com.neo.yande.entity.Downloader;
+import com.neo.yande.entity.FileLengthTools;
+import com.neo.yande.entity.Yande;
+import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,14 +15,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CountDownLatch;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.neo.yande.entity.Downloader;
-import com.neo.yande.entity.FileLengthTools;
-import com.neo.yande.entity.Yande;
 
 public class MultipartDownloader extends Downloader{
 	
@@ -57,7 +56,6 @@ public class MultipartDownloader extends Downloader{
 					break;
 				}
 			}
-			this.stop();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

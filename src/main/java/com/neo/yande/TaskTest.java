@@ -15,6 +15,8 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class TaskTest extends DownloaderTask {
 	
@@ -37,13 +39,25 @@ public class TaskTest extends DownloaderTask {
         	  file.mkdirs();
         	  logger.info("mkdirs "+ savePath);
         }
-		
-		for(int j = 0; j < total; j++) {
+
+        total = Math.min(total,queues.size());
 //			Downloader downLoader = new MultipartDownloader();
-			Downloader downLoader = new SimpleDownLoader();
-			downLoader.commenDownloader(j, savePath, queues);
-			downLoader.start();
-		}
+        ExecutorService executorService = Executors.newCachedThreadPool();
+
+        for(int j = 0; j < total; j++) {
+
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    Downloader downLoader = new SimpleDownLoader();
+                    downLoader.commenDownloader((int)(Math.random()*100), savePath, queues);
+                    downLoader.endlessDownloader();
+                }
+            });
+        }
+        executorService.shutdown();
+
+
 		return this;
 	}
 
@@ -98,7 +112,7 @@ public class TaskTest extends DownloaderTask {
 		Yande enfYande = new Yande();
 		enfYande.setOverFlag(1);
 		try {
-			queues.put(enfYande);
+            if(isHadDownLoad != true) queues.put(enfYande);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -110,7 +124,8 @@ public class TaskTest extends DownloaderTask {
 		return queues.size();
 	}
 
-	@Override
+
+    @Override
 	public DownloaderTask initeRedisQueues() {
 		Jedis jedis = redisClient.jedisPool.getResource();
 		Set<String> keySets = jedis.keys("*");
@@ -128,13 +143,12 @@ public class TaskTest extends DownloaderTask {
 			   }
 			
 		}
-		if(queues.size()> 0) {
-			
-			logger.info("将下载"+queues.size()+"张图片！");
-		}else {
-			logger.info("queues为空！");
-		}
-		jedis.close();
+        if (queues.size() > 0) {
+            logger.info("将下载" + queues.size() + "张图片！");
+        } else {
+            logger.info("queues为空！");
+        }
+        jedis.close();
 		return this;
 	}
 

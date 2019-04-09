@@ -6,11 +6,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class test {
-	
+
 //	private static Logger logger = LogManager.getLogger(test.class.getName());
 
-	public static void main(String[] args) throws InterruptedException {
-		
+    public static void main(String[] args) throws InterruptedException {
+
 //		PropertyConfigurator.configure("bin/log4j.propertier");
 //		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 //		try {
@@ -27,7 +27,7 @@ public class test {
 //		String rootPath = String.valueOf(classLoader.getResource(""));	
 //		logger.info("rootPath:"+rootPath);
 //		System.exit(0);
-		
+
 //		final String  savePath = "C:/yande";
 //		
 //		ArrayBlockingQueue<Yande> queues = new ArrayBlockingQueue<Yande>(200);
@@ -41,7 +41,7 @@ public class test {
 //			downLoader.commenDownloader(j, savePath, queues);
 //			downLoader.start();
 //		}
-		
+
 //		new TaskTest().initeDownloders(3).initeQueues(10, 10);
 
         DownloaderTask downloaderTask = new TaskTest().initeQueues(0, 100);
@@ -50,10 +50,10 @@ public class test {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                downloaderTask.initeRedisQueues().initeDownloders(8);
+                downloaderTask.initeRedisQueues().initeDownloders(6);
             }
-        },3000l);
-
+        }, 2000l);
+        
 
 
 //
@@ -61,7 +61,7 @@ public class test {
 //		url = url.replaceAll("\\?", "");
 //		System.out.println(url);
 
-   
-	}
+
+    }
 
 }

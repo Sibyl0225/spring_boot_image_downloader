@@ -1,27 +1,24 @@
 package com.neo.yande.downLoader;
 
+import com.neo.util.HttpClientUtil;
 import com.neo.yande.entity.Downloader;
 import com.neo.yande.entity.RedisClient;
 import com.neo.yande.entity.Yande;
+import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import redis.clients.jedis.Jedis;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.*;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class SimpleDownLoader extends Downloader {
 	
 	private static Logger logger = LogManager.getLogger(SimpleDownLoader.class.getName());
 	public static ArrayBlockingQueue<Yande> queue = null;
-    public static long sleepTime = 5000l;
+    public static long sleepTime = 500l;
 	
 	private static RedisClient redisClient = new RedisClient();
 
@@ -30,8 +27,8 @@ public class SimpleDownLoader extends Downloader {
 		queue = super.getQueue();
 		String savePath = super.getSavePath();
 		int threadId = super.getThreadId();
-		if (queue == null)
-			System.out.println("queue is null！");
+		if (queue == null)  return;
+
 		Yande yande = null;
 		try {
 			while (true) {
@@ -40,63 +37,56 @@ public class SimpleDownLoader extends Downloader {
 				if (yande != null && yande.isOverFlag() == 0) {
 					logger.info(yande);
 					logger.info("threadId: " + threadId + " 获取数据yande, 创建时间为：" + yande.getCreateDate() + "，开始 "+ yande.getImageName() +" 下载！");
-					logger.info("threadId: " + threadId + " 即将休眠1500ms...");
-					Thread.sleep(500);
 					try {
-						URL url = new URL(yande.getPreviewImage());
+						String url = yande.getPreviewImage();
 						// 加载下载位置的文件
 						File image = new File(savePath, yande.getImageName());
+                        CloseableHttpResponse response = HttpClientUtil.doGet(url,"");
+                        HttpEntity responseEntity = response.getEntity();
+                        boolean isStream = responseEntity.isStreaming();
+                        System.out.println("流文件："+isStream);
+                        if(isStream) {
+                            final InputStream content = responseEntity.getContent();
+                            FileUtils.copyInputStreamToFile(content,image);
+                            success(yande);
+                            logger.info("threadId: " + threadId + " 即将休眠300ms...");
+                            Thread.sleep(300l);
+                        }
 
-//                        CloseableHttpResponse response = My.doGet(url,"");
-//                        HttpEntity responseEntity = response.getEntity();
-//                        boolean isStreaming;
-//                        if (responseEntity.isStreaming()) isStreaming = true;
-//                        else isStreaming = false;
-//                        System.out.println("流文件："+isStreaming);
-//                        if(isStreaming){
-//                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                            try {
-//                                responseEntity.writeTo(baos);
-//                                FileUtils.writeByteArrayToFile(image,baos.toByteArray());
-//                                success(yande);
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
 
-						RandomAccessFile downThreadStream = new RandomAccessFile(image, "rwd");
-						HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-						connection.setRequestMethod("GET");
-						connection.setConnectTimeout(12 * 1000);
-						int responseCode = 200;
-						if (connection.getResponseCode() == responseCode) {// 200：请求全部资源成功，
-							// 206代表部分资源请求成功
-							InputStream inputStream = connection.getInputStream();// 获取流
-							downThreadStream.seek(0);// 文件写入的开始位置.
-							byte[] buffer = new byte[1024];
-							int length = -1;
-							int total = 0;// 记录本次线程下载的总大小
-							while ((length = inputStream.read(buffer)) > 0) {
-								downThreadStream.write(buffer, 0, length);
-								total = total + length;
-							}
-							downThreadStream.close();
-							inputStream.close();
-							logger.info("线程" + threadId + "最终下载量为： " + total + ",下载完毕!");
-							logger.info("完成时间：   " + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(new Date()));
+//                      URL url = new URL(yande.getPreviewImage());
+//						RandomAccessFile downThreadStream = new RandomAccessFile(image, "rwd");
+//						HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//						connection.setRequestMethod("GET");
+//						connection.setConnectTimeout(12 * 1000);
+//						int responseCode = 200;
+//						if (connection.getResponseCode() == responseCode) {// 200：请求全部资源成功，
+//							// 206代表部分资源请求成功
+//							InputStream inputStream = connection.getInputStream();// 获取流
+//							downThreadStream.seek(0);// 文件写入的开始位置.
+//							byte[] buffer = new byte[1024];
+//							int length = -1;
+//							int total = 0;// 记录本次线程下载的总大小
+//							while ((length = inputStream.read(buffer)) > 0) {
+//								downThreadStream.write(buffer, 0, length);
+//								total = total + length;
+//							}
+//							downThreadStream.close();
+//							inputStream.close();
+//							logger.info("线程" + threadId + "最终下载量为： " + total + ",下载完毕!");
+//							logger.info("完成时间：   " + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(new Date()));
+//
+//							success(yande);
+//						}
 
-							success(yande);
-						}
+
 
 					} catch (IOException e) {
 						fail(yande);
 						e.printStackTrace();
 					}
                 } else {
-                    queue.put(yande);
-                    logger.info("threadId: " + threadId + " 休眠！");
-                    Thread.sleep(sleepTime);
-                    sleepTime+=5000l;
+                    return;
 				}
 			}
 		} catch (InterruptedException e) {
@@ -112,13 +102,13 @@ public class SimpleDownLoader extends Downloader {
 		String hmResuly = resource.hmset(yande.getImageId(), yande.yandeToMap());
 		resource.close();
 		System.out.println("下载成功！hmResuly:"+hmResuly);
+
 	}
 
 	@Override
 	public void fail(Yande yande) {
 		yande.setHadDownload(false);
 		yande.setOverFlag(1);
-		
 		System.out.println("下载失败！");
 	}
 

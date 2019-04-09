@@ -1,19 +1,18 @@
 package com.neo.netease.tool;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.neo.util.DateUtil;
 import com.neo.yande.downLoader.DownloaderTask;
 import com.neo.yande.downLoader.SimpleDownLoader;
 import com.neo.yande.entity.Downloader;
 import com.neo.yande.entity.Yande;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class TaskTest extends DownloaderTask {
 	
@@ -42,7 +41,7 @@ public class TaskTest extends DownloaderTask {
 //			Downloader downLoader = new MultipartDownloader();
 			Downloader downLoader = new SimpleDownLoader();
 			downLoader.commenDownloader(j, savePath, queues);
-			downLoader.start();
+			downLoader.endlessDownloader();
 		}
 		return this;
 	}
@@ -88,7 +87,8 @@ public class TaskTest extends DownloaderTask {
 		return queues.size();
 	}
 
-	@Override
+
+    @Override
 	public DownloaderTask initeRedisQueues() {
 		// TODO Auto-generated method stub
 		return null;

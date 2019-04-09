@@ -2,12 +2,11 @@ package com.neo.yande.entity;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
-public abstract class Downloader extends Thread {
+public abstract class Downloader {
 	
 	private int threadId;
 	private ArrayBlockingQueue<Yande>  queue;
 	private String  savePath = null;
-	
 
 	public abstract void endlessDownloader() ;
 	
@@ -49,16 +48,6 @@ public abstract class Downloader extends Thread {
 
 	public void setSavePath(String savePath) {
 		this.savePath = savePath;
-	}
-
-	@Override
-	public void run() {
-		System.out.println("开始线程！");
-		try {
-			endlessDownloader();
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 }
