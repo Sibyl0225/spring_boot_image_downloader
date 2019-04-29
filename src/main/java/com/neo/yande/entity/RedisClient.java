@@ -23,8 +23,8 @@ public class RedisClient {
     public RedisClient() 
     { 
         initialPool(); 
-        initialShardedPool(); 
-        shardedJedis = shardedJedisPool.getResource(); 
+        //initialShardedPool(); 
+        //shardedJedis = shardedJedisPool.getResource(); 
         jedis = jedisPool.getResource(); 
                
     } 
@@ -40,12 +40,12 @@ public class RedisClient {
     	//redis.timeout_execute 60000
     	
     	ResourceBundle resource = ResourceBundle.getBundle("redis");
-    	//resource.getString("redis.name");
-    	//String password = resource.getString("redis.password");
-    	String host = resource.getString("redis.host");
-    	String port = resource.getString("redis.port");
-    	String timeout = resource.getString("redis.timeout_connect");
-    	//resource.getString("redis.timeout_execute");
+    	resource.getString("redis.name");
+//    	String password = resource.getString("redis.password");
+//    	String host = resource.getString("redis.host");
+//    	String port = resource.getString("redis.port");
+//    	String timeout = resource.getString("redis.timeout_connect");
+//    	String timeout_execute = resource.getString("redis.timeout_execute");
     	
     }
  
@@ -63,37 +63,38 @@ public class RedisClient {
         
     	String password = resource.getString("redis.password");
     	String host = resource.getString("redis.host");
-    	String port = resource.getString("redis.port");
-    	String timeout = resource.getString("redis.timeout_connect");
+    	int port = Integer.valueOf(resource.getString("redis.port"));
+    	int timeout_connect = Integer.valueOf(resource.getString("redis.timeout_connect"));
     	
-        jedisPool = new JedisPool(host,Integer.valueOf(port));
+        jedisPool = new JedisPool(config,host,port,timeout_connect,password,0);
     }
     
-    /** 
-     * 初始化切片池 
-     */ 
-    private void initialShardedPool() 
-    { 
-        // 池基本配置 
-        JedisPoolConfig config = new JedisPoolConfig(); 
-        config.setMaxTotal(20);
-        config.setMaxIdle(5); 
-        config.setMaxWaitMillis(1000l); 
-        config.setTestOnBorrow(false); 
-        // slave链接 
-        List<JedisShardInfo> shards = new ArrayList<JedisShardInfo>(); 
-        
-    	String password = resource.getString("redis.password");
-    	String host = resource.getString("redis.host");
-    	String port = resource.getString("redis.port");
-    	String timeout = resource.getString("redis.timeout_connect");
-    	
-        JedisShardInfo jedisShardInfo = new JedisShardInfo(host,Integer.valueOf(port));
-        jedisShardInfo.setConnectionTimeout(Integer.valueOf(timeout));
-        shards.add(jedisShardInfo); 
-
-        // 构造池 
-        shardedJedisPool = new ShardedJedisPool(config, shards); 
-    } 
+//    /** 
+//     * 初始化切片池 
+//     */ 
+//    private void initialShardedPool() 
+//    { 
+//        // 池基本配置 
+//        JedisPoolConfig config = new JedisPoolConfig(); 
+//        config.setMaxTotal(20);
+//        config.setMaxIdle(5); 
+//        config.setMaxWaitMillis(1000l); 
+//        config.setTestOnBorrow(false); 
+//        // slave链接 
+//        List<JedisShardInfo> shards = new ArrayList<JedisShardInfo>(); 
+//        
+//    	String password = resource.getString("redis.password");
+//    	String host = resource.getString("redis.host");
+//    	String port = resource.getString("redis.port");
+//    	String timeout = resource.getString("redis.timeout_connect");
+//    	
+//        JedisShardInfo jedisShardInfo = new JedisShardInfo(host,Integer.valueOf(port));
+//        jedisShardInfo.setConnectionTimeout(Integer.valueOf(timeout));
+//        jedisShardInfo.setPassword(password);
+//        shards.add(jedisShardInfo); 
+//
+//        // 构造池 
+//        shardedJedisPool = new ShardedJedisPool(config, shards); 
+//    } 
 
 }
