@@ -1,6 +1,7 @@
 package com.neo.yande.downLoader;
 
 import com.neo.util.HttpClientUtil;
+import com.neo.yande.entity.Const;
 import com.neo.yande.entity.Downloader;
 import com.neo.yande.entity.RedisClient;
 import com.neo.yande.entity.Yande;
@@ -20,7 +21,7 @@ public class SimpleDownLoader extends Downloader {
 	public static ArrayBlockingQueue<Yande> queue = null;
     public static long sleepTime = 500l;
 	
-	private static RedisClient redisClient = new RedisClient();
+	private static RedisClient redisClient = new RedisClient(Const.redis_yande);
 
 	@Override
 	public void endlessDownloader() {

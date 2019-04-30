@@ -8,5 +8,11 @@ public class Const {
 	
 	public static final String yande_url = "http://yande.re";
 	
+	public static final int redis_yande = 0;
+	
+	public static final int redis_song = 1;
+	
+	public static final int redis_test = 2;
+	
 
 }

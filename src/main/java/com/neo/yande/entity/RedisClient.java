@@ -20,9 +20,9 @@ public class RedisClient {
     public ShardedJedisPool shardedJedisPool;//切片连接池
     public ResourceBundle resource = ResourceBundle.getBundle("redis");
     
-    public RedisClient() 
+    public RedisClient(int idx) 
     { 
-        initialPool(); 
+        initialPool(idx); 
         //initialShardedPool(); 
         //shardedJedis = shardedJedisPool.getResource(); 
         jedis = jedisPool.getResource(); 
@@ -52,7 +52,7 @@ public class RedisClient {
     /**
      * 初始化非切片池
      */
-    private void initialPool() 
+    private void initialPool(int idx) 
     { 
         // 池基本配置 
         JedisPoolConfig config = new JedisPoolConfig(); 
@@ -66,7 +66,7 @@ public class RedisClient {
     	int port = Integer.valueOf(resource.getString("redis.port"));
     	int timeout_connect = Integer.valueOf(resource.getString("redis.timeout_connect"));
     	
-        jedisPool = new JedisPool(config,host,port,timeout_connect,password,0);
+        jedisPool = new JedisPool(config,host,port,timeout_connect,password,idx);
     }
     
 //    /** 

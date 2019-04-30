@@ -22,7 +22,7 @@ public class TaskTest extends DownloaderTask {
 	
 	private static Logger logger = LogManager.getLogger(test.class.getName());
 	
-	private static RedisClient redisClient = new RedisClient();
+	private static RedisClient redisClient = new RedisClient(0);
 	
 	String todayDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
 		
